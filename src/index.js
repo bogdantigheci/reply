@@ -10,8 +10,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { createStore, applyMiddleware } from 'redux';
 import reducer from './reducers';
 
-// require('dotenv').config();
-
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
 
 ReactDOM.render(
