@@ -5,6 +5,7 @@ import {
   REMOVE_COUNTRY,
   FILTER_COUNTRIES,
   SORT_COUNTRIES,
+  FILTER_COUNTRIES_BY_COORDS,
 } from '../constants/types';
 
 const defaultState = [];
@@ -19,6 +20,7 @@ export const countries = (state = defaultState, action) => {
     case REMOVE_COUNTRY:
     case FILTER_COUNTRIES:
     case SORT_COUNTRIES:
+    case FILTER_COUNTRIES_BY_COORDS:
       return [...action.countries];
     default:
       return state;

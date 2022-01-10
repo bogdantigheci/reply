@@ -9,10 +9,12 @@ import {
   FETCH_CITY_POPULATION_PENDING,
   FETCH_CITY_POPULATION_SUCCESS,
   ADD_CITY_TO_FAVORITES,
+  SORT_FAVORITE_CITIES,
 } from '../constants/types';
 import { fetchCountriesPending } from './countries';
 import { getCitiesList, getFavoriteCitiesList } from '../selectors/cities';
 import _ from 'lodash';
+import moment from 'moment';
 
 export const fetchCitiesPending = () => ({
   type: FETCH_CITIES_PENDING,
@@ -55,6 +57,11 @@ export const sortCitiessSucces = (cities) => ({
 export const addCityToFavoritesSuccess = (city) => ({
   type: ADD_CITY_TO_FAVORITES,
   city,
+});
+
+export const sortFavoriteCitiessSucces = (cities) => ({
+  type: SORT_FAVORITE_CITIES,
+  cities,
 });
 
 export const fetchCities = (countryName) => (dispatch) => {
@@ -116,8 +123,18 @@ export const addCityToFavorites =
       country: countryName,
       name: cityName,
       population: cityPopulation ? cityPopulation : [],
-      timestamp: Date.now(),
+      timestamp: moment().format('MM/DD/YYYY'),
     };
 
     return dispatch(addCityToFavoritesSuccess(city));
   };
+
+export const sortFavoriteCities = (type) => (dispatch, getState) => {
+  const state = getState();
+  const sortedFavoriteCities = _.orderBy(
+    getFavoriteCitiesList(state),
+    ['name'],
+    [type]
+  );
+  return dispatch(sortFavoriteCitiessSucces(sortedFavoriteCities));
+};

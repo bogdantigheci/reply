@@ -5,6 +5,7 @@ import {
   removeCountry,
   filterCountries,
   sortCountries,
+  filterCountriesByCoords,
 } from '../../actions/countries';
 import { getCountriesList } from '../../selectors/countries';
 import {
@@ -22,6 +23,7 @@ import {
 } from 'reactstrap';
 import _ from 'lodash';
 import Cities from '../Cities';
+import { useDebouncedCallback } from 'use-debounce';
 import './style.scss';
 
 const Countries = ({
@@ -30,6 +32,7 @@ const Countries = ({
   removeCountry,
   filterCountries,
   sortCountries,
+  filterCountriesByCoords,
 }) => {
   useEffect(() => {
     fetchCountries();
@@ -44,6 +47,8 @@ const Countries = ({
   const sortOptions = ['asc', 'desc'];
   const [showCities, setShowCities] = useState(false);
   const [selectedCountryName, setSelectedCountryName] = useState('');
+  const [lat, setLat] = useState('');
+  const [long, setLong] = useState('');
 
   const [pagesNo, setPagesNo] = useState(1);
 
@@ -86,12 +91,36 @@ const Countries = ({
   const handlePageSizeChange = (option) => setResultsPerPage(option);
 
   const handleDebounce = useCallback(_.debounce(filterCountries, 1000), []);
+  const handleDebouncedLatValue = useCallback(_.debounce(setLat, 1000), []);
+  const handleDebouncedLongValue = useCallback(_.debounce(setLong, 1000), []);
 
   const handleFilterCountries = (ev) => {
     const value = ev && ev.target && ev.target.value;
 
     return value !== '' ? handleDebounce(value) : fetchCountries();
   };
+
+  const handleFilterCountriesByCoords = (ev, coordType) => {
+    const value = ev && ev.target && ev.target.value;
+    const parsedValue = value.toString().split(',');
+
+    coordType === 'lat' && handleDebouncedLatValue(parsedValue);
+    coordType === 'long' && handleDebouncedLongValue(parsedValue);
+  };
+
+  useEffect(() => {
+    console.log('lat', lat, long);
+    if (lat && lat[0] !== '' && long && long[0] !== '') {
+      const coords = {
+        lat: lat.toString().split(','),
+        long: long.toString().split(','),
+      };
+
+      filterCountriesByCoords(coords);
+    } else {
+      fetchCountries();
+    }
+  }, [lat, long]);
 
   const handleSortCountries = (type) => {
     setSortType(type);
@@ -109,21 +138,24 @@ const Countries = ({
       goBack={() => setShowCities(false)}
     />
   ) : (
-    <div className="countries">
+    <div className="countries container">
       <div className="d-flex flex-column">
         <InputGroup>
           <Input
+            type="text"
             onChange={(ev) => handleFilterCountries(ev)}
             placeholder="Country name..."
           />
         </InputGroup>
         <InputGroup>
           <Input
-            onChange={(ev) => handleFilterCountries(ev)}
+            type="text"
+            onChange={(ev) => handleFilterCountriesByCoords(ev, 'lat')}
             placeholder="Latitude"
           />
           <Input
-            onChange={(ev) => handleFilterCountries(ev)}
+            type="text"
+            onChange={(ev) => handleFilterCountriesByCoords(ev, 'long')}
             placeholder="Longitude"
           />
         </InputGroup>
@@ -246,6 +278,8 @@ const mapDispatchToProps = (dispatch) => ({
   removeCountry: (country) => dispatch(removeCountry(country)),
   filterCountries: (value) => dispatch(filterCountries(value)),
   sortCountries: (type) => dispatch(sortCountries(type)),
+  filterCountriesByCoords: (countries) =>
+    dispatch(filterCountriesByCoords(countries)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Countries);

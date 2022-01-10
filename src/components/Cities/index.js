@@ -57,7 +57,7 @@ const Cities = ({
   };
 
   return (
-    <div className="cities">
+    <div className="cities container">
       <Button onClick={() => goBack()}>Back</Button>
       <div>
         <InputGroup>
