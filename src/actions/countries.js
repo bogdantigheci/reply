@@ -80,7 +80,6 @@ export const filterCountriesByCoords = (coords) => (dispatch, getState) => {
   let remainingCountries = [];
 
   if (coords.lat.length === 1 && coords.long.length === 1) {
-    console.log('in if 1 1');
     remainingCountries = getCountriesList(state).filter((el) => {
       return (
         el.lat === parseFloat(coords.lat[0]) &&
@@ -90,7 +89,6 @@ export const filterCountriesByCoords = (coords) => (dispatch, getState) => {
   }
 
   if (coords.lat.length === 2 && coords.long.length === 1) {
-    console.log('in if 2 1');
     remainingCountries = getCountriesList(state).filter((el) => {
       return (
         isBetweenOrEqual(
@@ -103,7 +101,6 @@ export const filterCountriesByCoords = (coords) => (dispatch, getState) => {
   }
 
   if (coords.lat.length === 1 && coords.long.length === 2) {
-    console.log('in if 1 2');
     remainingCountries = getCountriesList(state).filter((el) => {
       return (
         el.lat === parseFloat(coords.lat[0]) &&
@@ -117,7 +114,6 @@ export const filterCountriesByCoords = (coords) => (dispatch, getState) => {
   }
 
   if (coords.lat.length === 2 && coords.long.length === 2) {
-    console.log('in if 2 2');
     remainingCountries = getCountriesList(state).filter((el) => {
       return (
         isBetweenOrEqual(

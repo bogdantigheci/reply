@@ -23,7 +23,6 @@ import {
 } from 'reactstrap';
 import _ from 'lodash';
 import Cities from '../Cities';
-import { useDebouncedCallback } from 'use-debounce';
 import './style.scss';
 
 const Countries = ({
@@ -44,6 +43,9 @@ const Countries = ({
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [sortType, setSortType] = useState('asc');
   const pageSizeOptions = [10, 20, 30, 50, 100];
+  const [pageNumberLimit, setpageNumberLimit] = useState(5);
+  const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(5);
+  const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
   const sortOptions = ['asc', 'desc'];
   const [showCities, setShowCities] = useState(false);
   const [selectedCountryName, setSelectedCountryName] = useState('');
@@ -63,22 +65,57 @@ const Countries = ({
 
   const handlePrevioustPageClick = (e, index) => {
     e.preventDefault();
-    setCurrentPage(index - 1);
+
+    if (currentPage > 0) {
+      setCurrentPage(index - 1);
+    }
+
+    if ((currentPage - 1) % pageNumberLimit === 0) {
+      setmaxPageNumberLimit(maxPageNumberLimit - pageNumberLimit);
+      setminPageNumberLimit(minPageNumberLimit - pageNumberLimit);
+    }
   };
 
   const handleNextPageClick = (e, index) => {
     e.preventDefault();
-    setCurrentPage(index + 1);
+    if (currentPage < pagesNo - 1) {
+      setCurrentPage(index + 1);
+    }
+
+    if (currentPage + 1 > maxPageNumberLimit) {
+      setmaxPageNumberLimit(maxPageNumberLimit + pageNumberLimit);
+      setminPageNumberLimit(minPageNumberLimit + pageNumberLimit);
+    }
+  };
+
+  const handleFirstPageClick = (e) => {
+    e.preventDefault();
+
+    setCurrentPage(0);
+    setmaxPageNumberLimit(5);
+    setminPageNumberLimit(0);
+  };
+
+  const handleLastPageClick = (e) => {
+    e.preventDefault();
+
+    setCurrentPage(pagesNo - pageNumberLimit);
+    setmaxPageNumberLimit(pagesNo);
+    setminPageNumberLimit(pagesNo - pageNumberLimit);
   };
 
   const getPageNumbers = (numOfPages) => {
-    return [...Array(numOfPages)].map((page, i) => (
-      <PaginationItem key={i}>
-        <PaginationLink onClick={(e) => handlePageClick(e, i)} href="#">
-          {i + 1}
-        </PaginationLink>
-      </PaginationItem>
-    ));
+    return [...Array(numOfPages)].map((page, i) => {
+      if (i <= maxPageNumberLimit && i >= minPageNumberLimit) {
+        return (
+          <PaginationItem key={i}>
+            <PaginationLink onClick={(e) => handlePageClick(e, i)} href="#">
+              {i + 1}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+    });
   };
 
   const handleRemoveCountry = (country) => removeCountry(country);
@@ -109,7 +146,6 @@ const Countries = ({
   };
 
   useEffect(() => {
-    console.log('lat', lat, long);
     if (lat && lat[0] !== '' && long && long[0] !== '') {
       const coords = {
         lat: lat.toString().split(','),
@@ -219,13 +255,14 @@ const Countries = ({
             <PaginationLink
               first
               disabled={currentPage === 0}
-              onClick={(e) => handlePageClick(e, 0)}
+              onClick={(e) => handleFirstPageClick(e)}
               href="#"
             />
           </PaginationItem>
           <PaginationItem>
             <PaginationLink
               previous
+              disabled={currentPage === 0}
               onClick={(e) => handlePrevioustPageClick(e, currentPage)}
               href="#"
             />
@@ -234,16 +271,17 @@ const Countries = ({
           <PaginationItem>
             <PaginationLink
               next
+              disabled={currentPage === pagesNo - 1}
               onClick={(e) => handleNextPageClick(e, currentPage)}
               href="#"
             />
           </PaginationItem>
           <PaginationItem>
             <PaginationLink
-              onClick={(e) => handlePageClick(e, pagesNo)}
+              onClick={(e) => handleLastPageClick(e)}
               href="#"
               last
-              disabled={currentPage === pagesNo}
+              disabled={currentPage === pagesNo - 1}
             />
           </PaginationItem>
         </Pagination>
