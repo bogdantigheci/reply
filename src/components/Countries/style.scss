@@ -1,6 +1,22 @@
 .countries {
-  input {
-    max-width: 200px;
-    margin: 8px;
+  .input-group {
+    display: flex;
+    align-items: center;
+
+    span {
+      height: 100%;
+    }
+
+    input {
+      height: 38px;
+      max-width: 200px;
+      margin: 8px;
+    }
+
+    .-and {
+      margin-right: 8px;
+      display: flex;
+      align-items: center;
+    }
   }
 }

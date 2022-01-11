@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import moment from 'moment';
 import {
   Table,
   ButtonDropdown,
@@ -9,6 +8,7 @@ import {
   DropdownMenu,
   InputGroup,
   Input,
+  InputGroupText,
 } from 'reactstrap';
 import { connect } from 'react-redux';
 import { sortFavoriteCities } from '../../actions/cities';
@@ -82,6 +82,7 @@ const Favorites = ({ favoriteCities, sortFavoriteCities }) => {
   return (
     <div className="favorites container">
       <InputGroup>
+        <InputGroupText>Search by</InputGroupText>
         <Input
           onChange={(ev) => handleFilterCities(ev)}
           placeholder="City name..."
@@ -91,7 +92,7 @@ const Favorites = ({ favoriteCities, sortFavoriteCities }) => {
         isOpen={showSortDropdown}
         toggle={() => toggleSortDropdown()}
       >
-        <DropdownToggle caret>{sortType}</DropdownToggle>
+        <DropdownToggle caret>Sorted {sortType}</DropdownToggle>
         <DropdownMenu>
           {sortTypes.map((type) => (
             <DropdownItem
@@ -99,7 +100,7 @@ const Favorites = ({ favoriteCities, sortFavoriteCities }) => {
               key={type}
               onClick={() => handleSortFavoriteCities(type)}
             >
-              {type}
+              Sort {type}
             </DropdownItem>
           ))}
         </DropdownMenu>

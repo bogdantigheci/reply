@@ -8,6 +8,7 @@ import {
   DropdownMenu,
   DropdownItem,
   DropdownToggle,
+  InputGroupText,
 } from 'reactstrap';
 import { connect } from 'react-redux';
 import {
@@ -17,6 +18,7 @@ import {
   addCityToFavorites,
 } from '../../actions/cities';
 import _ from 'lodash';
+import './style.scss';
 
 const Cities = ({
   cities,
@@ -61,6 +63,7 @@ const Cities = ({
       <Button onClick={() => goBack()}>Back</Button>
       <div>
         <InputGroup>
+          <InputGroupText>Search by</InputGroupText>
           <Input
             onChange={(ev) => handleFilterCities(ev)}
             placeholder="City name..."
@@ -70,7 +73,7 @@ const Cities = ({
           isOpen={showSortDropdown}
           toggle={() => toggleSortDropdown()}
         >
-          <DropdownToggle caret>{sortType}</DropdownToggle>
+          <DropdownToggle caret>Sorted {sortType}</DropdownToggle>
           <DropdownMenu>
             {sortTypes.map((type) => (
               <DropdownItem
@@ -78,7 +81,7 @@ const Cities = ({
                 key={type}
                 onClick={() => handleSortCities(type)}
               >
-                {type}
+                Sort {type}
               </DropdownItem>
             ))}
           </DropdownMenu>

@@ -20,6 +20,7 @@ import {
   DropdownItem,
   InputGroup,
   Input,
+  InputGroupText,
 } from 'reactstrap';
 import _ from 'lodash';
 import Cities from '../Cities';
@@ -175,8 +176,9 @@ const Countries = ({
     />
   ) : (
     <div className="countries container">
-      <div className="d-flex flex-column">
+      <div>
         <InputGroup>
+          <InputGroupText>Search by</InputGroupText>
           <Input
             type="text"
             onChange={(ev) => handleFilterCountries(ev)}
@@ -184,22 +186,26 @@ const Countries = ({
           />
         </InputGroup>
         <InputGroup>
+          <InputGroupText>Search by</InputGroupText>
           <Input
             type="text"
             onChange={(ev) => handleFilterCountriesByCoords(ev, 'lat')}
             placeholder="Latitude"
           />
+          <span className="-and"> &#38;</span>
           <Input
             type="text"
             onChange={(ev) => handleFilterCountriesByCoords(ev, 'long')}
             placeholder="Longitude"
           />
         </InputGroup>
+      </div>
+      <div className="my-2">
         <ButtonDropdown
           isOpen={showSortDropdown}
           toggle={() => toggleSortDropdown()}
         >
-          <DropdownToggle caret>{sortType}</DropdownToggle>
+          <DropdownToggle caret>Sorted {sortType}</DropdownToggle>
           <DropdownMenu>
             {sortOptions.map((type) => (
               <DropdownItem
@@ -207,7 +213,7 @@ const Countries = ({
                 key={type}
                 onClick={() => handleSortCountries(type)}
               >
-                {type}
+                Sort {type}
               </DropdownItem>
             ))}
           </DropdownMenu>
