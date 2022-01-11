@@ -4,7 +4,7 @@ import { NavLink as RouterLink } from 'react-router-dom';
 
 const menu = () => {
   return (
-    <Navbar color="light" expand="md" light>
+    <Navbar className="container" color="light" expand="md" light>
       <Nav className="me-auto" navbar>
         <NavItem>
           <NavLink tag={RouterLink} to="/">
