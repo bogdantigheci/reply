@@ -11,11 +11,10 @@ import {
   InputGroupText,
 } from 'reactstrap';
 import { connect } from 'react-redux';
-import { sortFavoriteCities } from '../../actions/cities';
 import _ from 'lodash';
 import './style.scss';
 
-const Favorites = ({ favoriteCities, sortFavoriteCities }) => {
+const Favorites = ({ favoriteCities }) => {
   const [sortType, setSortType] = useState('asc');
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [favoriteCitiesList, setFavoriteCitiesList] = useState(favoriteCities);
@@ -23,7 +22,13 @@ const Favorites = ({ favoriteCities, sortFavoriteCities }) => {
 
   const handleSortFavoriteCities = (type) => {
     setSortType(type);
-    sortFavoriteCities(type);
+    const sortedFavoriteCities = _.orderBy(
+      favoriteCitiesList,
+      ['name'],
+      [type]
+    );
+    console.log('asdasdasdadasdsasdasdasd', sortedFavoriteCities);
+    setFavoriteCitiesList(sortedFavoriteCities);
   };
 
   const filterFavoriteCities = (cityName) => {
@@ -134,8 +139,4 @@ const mapStateToProps = (state) => ({
   favoriteCities: state.favoriteCities,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  sortFavoriteCities: (cities) => dispatch(sortFavoriteCities(cities)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Favorites);
+export default connect(mapStateToProps)(Favorites);
